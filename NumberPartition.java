@@ -4,8 +4,10 @@ public class NumberPartition {
 	}
 
   String[] test_args = {"hellozz"};
+  static Long[] test_long = {new Long(2),new Long(3)};
 	public static void main(String[] args) {
 		System.out.println("Hello World");
+    System.out.println( KarmarkarKarp(test_long));
 	}
 
   public static long KarmarkarKarp(Long[] arr) {
@@ -24,6 +26,6 @@ public class NumberPartition {
       heap.insert(difference);
     }
     // when the heap contains 1 element, return
-    return heap.removemax();
+    return heap.removemax().longValue();
   }
 }
