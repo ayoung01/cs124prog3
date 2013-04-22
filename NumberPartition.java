@@ -14,11 +14,19 @@ public class NumberPartition {
 	public NumberPartition() {
 	}
 
+ //  String[] test_args = {"hellozz"};
+ //  static Long[] test_long = {new Long(10),new Long(15),new Long(3),new Long(10),new Long(9),new Long(19),new Long(19),new Long(1),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15)};
+  static int max_iter = 50;
+
+	// public static void main(String[] args) {
+	// 	System.out.println("Hello World");
+ //    // System.out.println( KarmarkarKarp(test_long));
+
  //    System.out.println( Random_alg(test_long) );
 
 
 	public static void main(String[] args) {
-    String filename = args[1];
+    String filename = args[0];
     Long[] a = new Long[100];
     try {
       InputStream fis = new FileInputStream(filename);
