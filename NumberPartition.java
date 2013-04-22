@@ -10,6 +10,8 @@ import java.nio.charset.Charset;
  * @author Albert Young, Peregrine Badger
  */
 
+private static final long MAX_LONG = 100000000000L;
+
 public class NumberPartition {
 	public NumberPartition() {
 	}
@@ -18,7 +20,7 @@ public class NumberPartition {
 
 
 	public static void main(String[] args) {
-    String filename = args[1];
+    String filename = args[0];
     Long[] a = new Long[100];
     try {
       InputStream fis = new FileInputStream(filename);
