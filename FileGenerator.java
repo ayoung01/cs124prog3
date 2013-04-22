@@ -15,8 +15,7 @@ public class FileGenerator {
             FileWriter fstream = new FileWriter(n + ".txt");
             BufferedWriter out = new BufferedWriter(fstream);
             for (int i = 0; i < 100; i++) {
-                String s = "" + (long)(Math.round(Math.random() * l));
-                System.out.println(i);
+                String s = "" + (long)(Math.round(Math.random() * MAX_LONG));
                 out.write(s + "\r\n");
             }
             //Close the output stream

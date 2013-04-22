@@ -10,21 +10,14 @@ import java.nio.charset.Charset;
  * @author Albert Young, Peregrine Badger
  */
 
-private static final long MAX_LONG = 100000000000L;
 
 public class NumberPartition {
 	public NumberPartition() {
 	}
 
- //  String[] test_args = {"hellozz"};
  //  static Long[] test_long = {new Long(10),new Long(15),new Long(3),new Long(10),new Long(9),new Long(19),new Long(19),new Long(1),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15)};
-  static int max_iter = 50;
-
-	// public static void main(String[] args) {
-	// 	System.out.println("Hello World");
- //    // System.out.println( KarmarkarKarp(test_long));
-
- //    System.out.println( Random_alg(test_long) );
+  static int max_iter = 2225000;
+  private static final long MAX_LONG = 100000000000L;
 
 
 	public static void main(String[] args) {
@@ -42,6 +35,7 @@ public class NumberPartition {
     }
     NumberPartition np = new NumberPartition();
     System.out.println(np.KarmarkarKarp(a));
+    System.out.println(np.Random_alg(a));
 	}
 
   public long KarmarkarKarp(Long[] arr) {
@@ -64,9 +58,9 @@ public class NumberPartition {
   }
 
   public static long Random_alg(Long[] arr){
-    Random generator = new Random();
+    Random generator = new Random(110000);
     int rand = 0;
-    Long best_residue = new Long(999999999);
+    Long best_residue = new Long(MAX_LONG);
     // this ^^ should be the largest number in set, or initialized on first pass...
     Long current_residue = new Long(0);
     for(int iter = 0; iter<max_iter; iter++){
@@ -84,7 +78,7 @@ public class NumberPartition {
       if (current_residue < best_residue){
         best_residue = current_residue;
       }
-      System.out.println(best_residue.longValue());
+      // System.out.println(best_residue.longValue());
     }
     return best_residue.longValue();
   }
