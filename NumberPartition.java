@@ -1,13 +1,19 @@
+import java.util.Random;
+
 public class NumberPartition {
 	public NumberPartition() {
 
 	}
 
   String[] test_args = {"hellozz"};
-  static Long[] test_long = {new Long(2),new Long(3)};
+  static Long[] test_long = {new Long(10),new Long(15),new Long(3),new Long(10),new Long(9),new Long(19),new Long(19),new Long(1),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15)};
+  static int max_iter = 50;
+
 	public static void main(String[] args) {
 		System.out.println("Hello World");
-    System.out.println( KarmarkarKarp(test_long));
+    // System.out.println( KarmarkarKarp(test_long));
+
+    System.out.println( Random_alg(test_long) );
 	}
 
   public static long KarmarkarKarp(Long[] arr) {
@@ -27,5 +33,31 @@ public class NumberPartition {
     }
     // when the heap contains 1 element, return
     return heap.removemax().longValue();
+  }
+
+  public static long Random_alg(Long[] arr){
+    Random generator = new Random();
+    int rand = 0;
+    Long best_residue = new Long(999999999);
+    // this ^^ should be the largest number in set, or initialized on first pass...
+    Long current_residue = new Long(0);
+    for(int iter = 0; iter<max_iter; iter++){
+      current_residue = new Long(0);
+      for(int arr_iter = 0; arr_iter<arr.length; arr_iter++){
+        rand = generator.nextInt();
+        if((rand % 2) == 0){
+          current_residue += arr[arr_iter];
+        }
+        else{
+          current_residue -= arr[arr_iter];
+        }        
+      }
+      current_residue = Math.abs(current_residue);
+      if (current_residue < best_residue){
+        best_residue = current_residue;
+      }
+      System.out.println(best_residue.longValue());
+    }
+    return best_residue.longValue();
   }
 }
