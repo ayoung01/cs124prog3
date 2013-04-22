@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +12,9 @@ import java.nio.charset.Charset;
 
 public class NumberPartition {
 	public NumberPartition() {
-
 	}
+
+ //    System.out.println( Random_alg(test_long) );
 
 
 	public static void main(String[] args) {
@@ -49,5 +51,31 @@ public class NumberPartition {
     }
     // when the heap contains 1 element, return
     return heap.removemax().longValue();
+  }
+
+  public static long Random_alg(Long[] arr){
+    Random generator = new Random();
+    int rand = 0;
+    Long best_residue = new Long(999999999);
+    // this ^^ should be the largest number in set, or initialized on first pass...
+    Long current_residue = new Long(0);
+    for(int iter = 0; iter<max_iter; iter++){
+      current_residue = new Long(0);
+      for(int arr_iter = 0; arr_iter<arr.length; arr_iter++){
+        rand = generator.nextInt();
+        if((rand % 2) == 0){
+          current_residue += arr[arr_iter];
+        }
+        else{
+          current_residue -= arr[arr_iter];
+        }        
+      }
+      current_residue = Math.abs(current_residue);
+      if (current_residue < best_residue){
+        best_residue = current_residue;
+      }
+      System.out.println(best_residue.longValue());
+    }
+    return best_residue.longValue();
   }
 }
