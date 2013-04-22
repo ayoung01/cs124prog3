@@ -1,16 +1,38 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+
+/**
+ * @author Albert Young, Peregrine Badger
+ */
+
 public class NumberPartition {
 	public NumberPartition() {
 
 	}
 
-  String[] test_args = {"hellozz"};
-  static Long[] test_long = {new Long(2),new Long(3)};
+
 	public static void main(String[] args) {
-		System.out.println("Hello World");
-    System.out.println( KarmarkarKarp(test_long));
+    String filename = args[1];
+    Long[] a = new Long[100];
+    try {
+      InputStream fis = new FileInputStream(filename);
+      BufferedReader br = new BufferedReader(new InputStreamReader(fis, Charset.forName("UTF-8")));
+      for (int i = 0; i < 100; i++) {
+        a[i] = new Long(Long.parseLong(br.readLine()));
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    NumberPartition np = new NumberPartition();
+    System.out.println(np.KarmarkarKarp(a));
 	}
 
-  public static long KarmarkarKarp(Long[] arr) {
+  public long KarmarkarKarp(Long[] arr) {
     MaxHeap<Long> heap = new MaxHeap<Long>(arr, arr.length, arr.length);
     if (arr.length < 1) {
       System.out.println("Incorrect input size");
