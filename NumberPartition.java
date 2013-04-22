@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.Collections;
+import java.util.Arrays;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,21 +39,24 @@ public class NumberPartition {
     }
     NumberPartition np = new NumberPartition();
     System.out.println(np.karmarkarKarp(a));
-    System.out.println(np.random_alg(a));
+    // System.out.println(np.random_alg(a));
+    // System.out.println(np.random_alg2(a));
+    System.out.println(np.hill_climb(a));
 	}
 
-  public Long[] prePartition(Long[] a, Long[] p) {
+  public Long[] prePartition(Long[] a, int[] p) {
     int len = a.length;
     // initialize ans to all zeroes
-    Long[] ans = new Long[len];
-    for (int i = 0; i < ans.length; i++) {
-      ans[i] = new Long(0);
+    Long[] a_prime = new Long[len];
+    for (int i = 0; i < a_prime.length; i++) {
+      a_prime[i] = new Long(0);
     }
 
     for (int i = 0; i < len; i++) {
-      ans[(int)(p[i].longValue())] += a[i];
+      a_prime[p[i]] += a[i];
     }
-    return ans;
+    // System.out.println(Arrays.toString(a_prime));
+    return a_prime;
   }
 
   public long karmarkarKarp(Long[] arr) {
@@ -74,7 +78,17 @@ public class NumberPartition {
     return heap.removemax().longValue();
   }
 
-  public static long random_alg(Long[] arr){
+  // generates a random P array of length n
+  public int[] gen_random_p (int n) {
+    Random generator = new Random();
+    int[] ans = new int[n];
+    for (int i = 0; i < n; i++) {
+      ans[i] = generator.nextInt(n);
+    }
+    return ans;
+  }
+
+  public long random_alg(Long[] arr){
     Random generator = new Random(System.currentTimeMillis());
     int rand = 0;
     Long best_residue = new Long(MAX_LONG);
@@ -107,16 +121,17 @@ public class NumberPartition {
     Long current_residue = new Long(0);
     int rand = 0;
     int rand_index = 0;
-
+    solution = generate_rand_soln();
+    for(int i=0; i<100; i++){
+      best_residue += solution[i]*in_arr[i];
+    }
+    best_residue = Math.abs(best_residue);
     for(int j=0; j<max_iter; j++){
-      solution = generate_rand_soln();
-      for(int i=0; i<100; i++){
-        best_residue += solution[i]*in_arr[i];
-      }
       neighbor = find_neighbor(solution);
       for(int i=0; i<100; i++){
         current_residue += neighbor[i]*in_arr[i];
       }
+      current_residue = Math.abs(current_residue);
       if(current_residue < best_residue){
         best_residue = current_residue;
       }
@@ -130,7 +145,7 @@ public class NumberPartition {
     for(int i=0; i<100; i++){
       switch_array[i] = i;
     }
-    Collections.shuffle(switch_array);
+    Collections.shuffle(Arrays.asList(switch_array));
     int rand_index = switch_array[0];
 
     Long[] neighbor = new Long[100];
@@ -158,5 +173,19 @@ public class NumberPartition {
       }
     }
     return solution;
+  }
+
+
+  public long random_alg2(Long[] arr) {
+    long best_residue = MAX_LONG;
+    long current_residue;
+    for (int iter = 0; iter < 1000; iter++) {
+      Long[] a_prime = prePartition(arr, gen_random_p(arr.length));
+      current_residue = karmarkarKarp(a_prime);
+      if (current_residue < best_residue) {
+        best_residue = current_residue;
+      }
+    }
+    return best_residue;
   }
 }
