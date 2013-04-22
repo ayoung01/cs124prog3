@@ -1,10 +1,12 @@
 import java.util.Random;
+import java.util.Collections;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+
 
 /**
  * @author Albert Young, Peregrine Badger
@@ -98,41 +100,54 @@ public class NumberPartition {
   }
 
   public static long hill_climb(Long[] in_arr){
-    Random generator = new Random();
-    Long[] solution = new Long[100];
-    Long[] neighbor = new Long[100];
-    Long best_residue = MAX_LONG;
+    Random generator = new Random(System.currentTimeMillis());
+    int[] solution = new int[100];
+    int[] neighbor = new int[100];
+    Long best_residue = new Long(0);
+    Long current_residue = new Long(0);
     int rand = 0;
     int rand_index = 0;
 
-    // for(int j=0; j<max_iter; j++){
-
-    // }
-
-    Long current_residue = 0;
-    solution = generate_rand_soln();
-    for(int i=0; i<100; i++){
-      current_residue += solution[i]*in_arr[i];
+    for(int j=0; j<max_iter; j++){
+      solution = generate_rand_soln();
+      for(int i=0; i<100; i++){
+        best_residue += solution[i]*in_arr[i];
+      }
+      neighbor = find_neighbor(solution);
+      for(int i=0; i<100; i++){
+        current_residue += neighbor[i]*in_arr[i];
+      }
+      if(current_residue < best_residue){
+        best_residue = current_residue;
+      }
     }
-    neighbor = find_neighbor(solution);
-    
+    return best_residue;
   }
-  public static Long[] find_neighbor(Long[] solution){
-    Random generator = new Random();
+  public static int[] find_neighbor(int[] solution){
+    Random generator = new Random(System.currentTimeMillis());
     int rand = generator.nextInt() % 2;
-    int rand_index = generator.nextInt() % 100;
+    int[] switch_array = new int[100];
+    for(int i=0; i<100; i++){
+      switch_array[i] = i;
+    }
+    Collections.shuffle(switch_array);
+    int rand_index = switch_array[0];
+
     Long[] neighbor = new Long[100];
     if(rand == 0){
       solution[rand_index] = -solution[rand_index];
     }
     else{
       solution[rand_index] = -solution[rand_index];
-      rand_index = generator.nextInt() % 100;
+      rand_index = switch_array[1];
+      solution[rand_index] = -solution[rand_index];
     }
+    return solution;
   }
-  public static Long[] generate_rand_soln(){
+  public static int[] generate_rand_soln(){
     Random generator = new Random();
     int rand = 0;
+    int[] solution = new int[100];
     for(int i=0; i<100; i++){
       rand = generator.nextInt();
       if(rand % 2 == 0){
