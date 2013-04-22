@@ -15,7 +15,7 @@ public class NumberPartition {
 	public NumberPartition() {
 	}
 
- //  static Long[] test_long = {new Long(10),new Long(15),new Long(3),new Long(10),new Long(9),new Long(19),new Long(19),new Long(1),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15)};
+  //  static Long[] test_long = {new Long(10),new Long(15),new Long(3),new Long(10),new Long(9),new Long(19),new Long(19),new Long(1),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15)};
   static int max_iter = 2225000;
   private static final long MAX_LONG = 100000000000L;
 
@@ -38,7 +38,7 @@ public class NumberPartition {
     System.out.println(np.Random_alg(a));
 	}
 
-  public long KarmarkarKarp(Long[] arr) {
+  public long karmarkarKarp(Long[] arr) {
     MaxHeap<Long> heap = new MaxHeap<Long>(arr, arr.length, arr.length);
     if (arr.length < 1) {
       System.out.println("Incorrect input size");
@@ -57,11 +57,10 @@ public class NumberPartition {
     return heap.removemax().longValue();
   }
 
-  public static long Random_alg(Long[] arr){
+  public static long random_alg(Long[] arr){
     Random generator = new Random(110000);
     int rand = 0;
     Long best_residue = new Long(MAX_LONG);
-    // this ^^ should be the largest number in set, or initialized on first pass...
     Long current_residue = new Long(0);
     for(int iter = 0; iter<max_iter; iter++){
       current_residue = new Long(0);
@@ -81,5 +80,53 @@ public class NumberPartition {
       // System.out.println(best_residue.longValue());
     }
     return best_residue.longValue();
+  }
+
+  public static long hill_climb(Long[] in_arr){
+    Random generator = new Random();
+    Long[] solution = new Long[100];
+    Long[] neighbor = new Long[100];
+    Long best_residue = MAX_LONG;
+    int rand = 0;
+    int rand_index = 0;
+
+    // for(int j=0; j<max_iter; j++){
+
+    // }
+
+    Long current_residue = 0;
+    solution = generate_rand_soln();
+    for(int i=0; i<100; i++){
+      current_residue += solution[i]*in_arr[i];
+    }
+    neighbor = find_neighbor(solution);
+    
+  }
+  public static Long[] find_neighbor(Long[] solution){
+    Random generator = new Random();
+    int rand = generator.nextInt() % 2;
+    int rand_index = generator.nextInt() % 100;
+    Long[] neighbor = new Long[100];
+    if(rand == 0){
+      solution[rand_index] = -solution[rand_index];
+    }
+    else{
+      solution[rand_index] = -solution[rand_index];
+      rand_index = generator.nextInt() % 100;
+    }
+  }
+  public static Long[] generate_rand_soln(){
+    Random generator = new Random();
+    int rand = 0;
+    for(int i=0; i<100; i++){
+      rand = generator.nextInt();
+      if(rand % 2 == 0){
+        solution[i] = 1;
+      }
+      else{
+        solution[i] = -1;
+      }
+    }
+    return solution;
   }
 }
