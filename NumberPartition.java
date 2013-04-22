@@ -10,6 +10,8 @@ import java.nio.charset.Charset;
  * @author Albert Young, Peregrine Badger
  */
 
+private static final long MAX_LONG = 100000000000L;
+
 public class NumberPartition {
 	public NumberPartition() {
 	}
