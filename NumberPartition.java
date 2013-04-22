@@ -15,13 +15,14 @@ public class NumberPartition {
 	public NumberPartition() {
 	}
 
-  //  static Long[] test_long = {new Long(10),new Long(15),new Long(3),new Long(10),new Long(9),new Long(19),new Long(19),new Long(1),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15)};
-  static int max_iter = 2225000;
+ //  static Long[] test_long = {new Long(10),new Long(15),new Long(3),new Long(10),new Long(9),new Long(19),new Long(19),new Long(1),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15)};
+  static int max_iter = 25000;
   private static final long MAX_LONG = 100000000000L;
-
 
 	public static void main(String[] args) {
     String filename = args[0];
+    Long[] test = {new Long(10), new Long(8),
+      new Long(7), new Long(6), new Long(5)};
     Long[] a = new Long[100];
     try {
       InputStream fis = new FileInputStream(filename);
@@ -34,9 +35,23 @@ public class NumberPartition {
       e.printStackTrace();
     }
     NumberPartition np = new NumberPartition();
-    System.out.println(np.KarmarkarKarp(a));
-    System.out.println(np.Random_alg(a));
+    System.out.println(np.karmarkarKarp(a));
+    System.out.println(np.random_alg(a));
 	}
+
+  public Long[] prePartition(Long[] a, Long[] p) {
+    int len = a.length;
+    // initialize ans to all zeroes
+    Long[] ans = new Long[len];
+    for (int i = 0; i < ans.length; i++) {
+      ans[i] = new Long(0);
+    }
+
+    for (int i = 0; i < len; i++) {
+      ans[(int)(p[i].longValue())] += a[i];
+    }
+    return ans;
+  }
 
   public long karmarkarKarp(Long[] arr) {
     MaxHeap<Long> heap = new MaxHeap<Long>(arr, arr.length, arr.length);
@@ -58,7 +73,7 @@ public class NumberPartition {
   }
 
   public static long random_alg(Long[] arr){
-    Random generator = new Random(110000);
+    Random generator = new Random(System.currentTimeMillis());
     int rand = 0;
     Long best_residue = new Long(MAX_LONG);
     Long current_residue = new Long(0);
