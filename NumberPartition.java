@@ -37,67 +37,8 @@ public class NumberPartition {
       e.printStackTrace();
     }
     NumberPartition np = new NumberPartition();
-    int[] P = np.gen_random_p(inputList.length);
-    Long[] partitioned = np.prePartition(inputList, P);
-    // System.out.println(Arrays.toString(P));
-
-    // System.out.println();
-    // System.out.println(Arrays.toString(partitioned));
-
-    // System.out.println(np.karmarkarKarp(partitioned));
-    
-    // System.out.println(np.karmarkarKarp(inputList));
-    // System.out.println(np.random_alg(inputList));
     System.out.println(np.random_alg2(inputList));
-    // System.out.println(np.hill_climb(inputList));
 	}
-
-  // generates a random P array of length len
-  public int[] gen_random_p (int len) {
-    Random generator = new Random();
-    int[] p = new int[len];
-    for (int i = 0; i < len; i++) {
-      p[i] = generator.nextInt(len);
-    }
-    return p;
-  }
-
-  // given A and randomly generated P, return A'
-  public Long[] prePartition(Long[] a, int[] p) {
-    int len = a.length;
-    // initialize a_prime to all zeroes
-    Long[] a_prime = new Long[len];
-    for (int i = 0; i < a_prime.length; i++) {
-      a_prime[i] = new Long(0);
-    }
-
-    for (int i = 0; i < len; i++) {
-      a_prime[p[i]] += a[i];
-    }
-    // System.out.println(Arrays.toString(a_prime));
-    return a_prime;
-  }
-
-  // returns the KK residue given a list of longs
-  public long karmarkarKarp(Long[] arr) {
-    MaxHeap<Long> heap = new MaxHeap<Long>(arr, arr.length, arr.length);
-    if (arr.length < 1) {
-      System.out.println("Incorrect input size");
-      return -1;
-    }
-
-    // while max heap has more than 1 element
-    // remove top two elements from max heap and take the difference
-    while (heap.heapsize() > 1) {
-      Long x = heap.removemax();
-      Long y = heap.removemax();
-
-      // insert the difference into the heap
-      heap.insert(x - y);
-    }
-    // when the heap contains 1 element, return
-    return heap.removemax().longValue();
-  }
 
   public long random_alg(Long[] arr){
     Random generator = new Random(System.currentTimeMillis());
@@ -186,27 +127,21 @@ public class NumberPartition {
     return solution;
   }
 
-  // returns KK residue from random prepartion solution
-  public long random_alg2(Long[] arr) {
+    public long random_alg2(Long[] arr) {
     Long[] a = arr;
-    int[] best_p = gen_random_p(arr.length);
     int best_iter = -1;
     long best_residue = MAX_LONG;
     long current_residue;
-    for (int iter = 0; iter < 25000; iter++) {
-      int[] p = gen_random_p(arr.length);
-      Long[] a_prime = prePartition(a, p);
-      // System.out.println(Arrays.toString(a_prime));
-      current_residue = karmarkarKarp(a_prime);
-      System.out.println("Current residue: (" + iter + ") " + current_residue);
+
+    for (int iter = 0; iter < MAX_ITER; iter++) {
+      PrePartition pp = new PrePartition(arr);
+      current_residue = pp.residue();
       if (current_residue < best_residue) {
         best_residue = current_residue;
-        best_p = p;
-        best_iter = iter;
+
         System.out.println("Best residue: " + best_residue);
       }
     }
-    System.out.println("Best P: (" + best_iter + ")" + Arrays.toString(best_p));
     return best_residue;
   }
 }

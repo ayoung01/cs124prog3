@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 // hope this works ^_^
 public class FileGenerator {
     private static final long MAX_LONG = 100000000000L;
-    private static final int NUM_INPUTS = 10;
+    private static final int NUM_INPUTS = 100;
     public static void main(String[] args){
         genFile(Integer.parseInt(args[0]));
     }
