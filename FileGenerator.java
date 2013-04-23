@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 // hope this works ^_^
 public class FileGenerator {
     private static final long MAX_LONG = 100000000000L;
+    private static final int NUM_INPUTS = 10;
     public static void main(String[] args){
         genFile(Integer.parseInt(args[0]));
     }
@@ -14,7 +15,7 @@ public class FileGenerator {
             // Create file 
             FileWriter fstream = new FileWriter(n + ".txt");
             BufferedWriter out = new BufferedWriter(fstream);
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < NUM_INPUTS; i++) {
                 String s = "" + (long)(Math.round(Math.random() * MAX_LONG));
                 out.write(s + "\r\n");
             }

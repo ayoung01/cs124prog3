@@ -19,34 +19,53 @@ public class NumberPartition {
 	}
 
  //  static Long[] test_long = {new Long(10),new Long(15),new Long(3),new Long(10),new Long(9),new Long(19),new Long(19),new Long(1),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15)};
-  static int max_iter = 25000;
-  private static final long MAX_LONG = 100000000000L;
+  private final int MAX_ITER = 25000;
+  private final long MAX_LONG = 100000000000L;
+  private final static int NUM_INPUTS = 100; 
 
 	public static void main(String[] args) {
     String filename = args[0];
-    Long[] test = {new Long(10), new Long(8),
-      new Long(7), new Long(6), new Long(5)};
-    Long[] a = new Long[100];
+    Long[] inputList = new Long[NUM_INPUTS];
     try {
       InputStream fis = new FileInputStream(filename);
       BufferedReader br = new BufferedReader(new InputStreamReader(fis, Charset.forName("UTF-8")));
-      for (int i = 0; i < 100; i++) {
-        a[i] = new Long(Long.parseLong(br.readLine()));
+      for (int i = 0; i < NUM_INPUTS; i++) {
+        inputList[i] = new Long(Long.parseLong(br.readLine()));
       }
     }
     catch (Exception e) {
       e.printStackTrace();
     }
     NumberPartition np = new NumberPartition();
-    System.out.println(np.karmarkarKarp(a));
-    // System.out.println(np.random_alg(a));
-    // System.out.println(np.random_alg2(a));
-    System.out.println(np.hill_climb(a));
+    int[] P = np.gen_random_p(inputList.length);
+    Long[] partitioned = np.prePartition(inputList, P);
+    // System.out.println(Arrays.toString(P));
+
+    // System.out.println();
+    // System.out.println(Arrays.toString(partitioned));
+
+    // System.out.println(np.karmarkarKarp(partitioned));
+    
+    // System.out.println(np.karmarkarKarp(inputList));
+    // System.out.println(np.random_alg(inputList));
+    System.out.println(np.random_alg2(inputList));
+    // System.out.println(np.hill_climb(inputList));
 	}
 
+  // generates a random P array of length len
+  public int[] gen_random_p (int len) {
+    Random generator = new Random();
+    int[] p = new int[len];
+    for (int i = 0; i < len; i++) {
+      p[i] = generator.nextInt(len);
+    }
+    return p;
+  }
+
+  // given A and randomly generated P, return A'
   public Long[] prePartition(Long[] a, int[] p) {
     int len = a.length;
-    // initialize ans to all zeroes
+    // initialize a_prime to all zeroes
     Long[] a_prime = new Long[len];
     for (int i = 0; i < a_prime.length; i++) {
       a_prime[i] = new Long(0);
@@ -59,33 +78,25 @@ public class NumberPartition {
     return a_prime;
   }
 
+  // returns the KK residue given a list of longs
   public long karmarkarKarp(Long[] arr) {
     MaxHeap<Long> heap = new MaxHeap<Long>(arr, arr.length, arr.length);
     if (arr.length < 1) {
       System.out.println("Incorrect input size");
       return -1;
     }
+
     // while max heap has more than 1 element
     // remove top two elements from max heap and take the difference
     while (heap.heapsize() > 1) {
-      long a = heap.removemax().longValue();
-      long b = heap.removemax().longValue();
-      Long difference = new Long (a - b);
-      // reinsert the difference into the heap
-      heap.insert(difference);
+      Long x = heap.removemax();
+      Long y = heap.removemax();
+
+      // insert the difference into the heap
+      heap.insert(x - y);
     }
     // when the heap contains 1 element, return
     return heap.removemax().longValue();
-  }
-
-  // generates a random P array of length n
-  public int[] gen_random_p (int n) {
-    Random generator = new Random();
-    int[] ans = new int[n];
-    for (int i = 0; i < n; i++) {
-      ans[i] = generator.nextInt(n);
-    }
-    return ans;
   }
 
   public long random_alg(Long[] arr){
@@ -93,7 +104,7 @@ public class NumberPartition {
     int rand = 0;
     Long best_residue = new Long(MAX_LONG);
     Long current_residue = new Long(0);
-    for(int iter = 0; iter<max_iter; iter++){
+    for(int iter = 0; iter<MAX_ITER; iter++){
       current_residue = new Long(0);
       for(int arr_iter = 0; arr_iter<arr.length; arr_iter++){
         rand = generator.nextInt();
@@ -113,7 +124,7 @@ public class NumberPartition {
     return best_residue.longValue();
   }
 
-  public static long hill_climb(Long[] in_arr){
+  public long hill_climb(Long[] in_arr){
     Random generator = new Random(System.currentTimeMillis());
     int[] solution = new int[100];
     int[] neighbor = new int[100];
@@ -126,7 +137,7 @@ public class NumberPartition {
       best_residue += solution[i]*in_arr[i];
     }
     best_residue = Math.abs(best_residue);
-    for(int j=0; j<max_iter; j++){
+    for(int j=0; j<MAX_ITER; j++){
       neighbor = find_neighbor(solution);
       for(int i=0; i<100; i++){
         current_residue += neighbor[i]*in_arr[i];
@@ -138,7 +149,7 @@ public class NumberPartition {
     }
     return best_residue;
   }
-  public static int[] find_neighbor(int[] solution){
+  public int[] find_neighbor(int[] solution){
     Random generator = new Random(System.currentTimeMillis());
     int rand = generator.nextInt() % 2;
     int[] switch_array = new int[100];
@@ -159,7 +170,7 @@ public class NumberPartition {
     }
     return solution;
   }
-  public static int[] generate_rand_soln(){
+  public int[] generate_rand_soln(){
     Random generator = new Random();
     int rand = 0;
     int[] solution = new int[100];
@@ -175,17 +186,27 @@ public class NumberPartition {
     return solution;
   }
 
-
+  // returns KK residue from random prepartion solution
   public long random_alg2(Long[] arr) {
+    Long[] a = arr;
+    int[] best_p = gen_random_p(arr.length);
+    int best_iter = -1;
     long best_residue = MAX_LONG;
     long current_residue;
-    for (int iter = 0; iter < 1000; iter++) {
-      Long[] a_prime = prePartition(arr, gen_random_p(arr.length));
+    for (int iter = 0; iter < 25000; iter++) {
+      int[] p = gen_random_p(arr.length);
+      Long[] a_prime = prePartition(a, p);
+      // System.out.println(Arrays.toString(a_prime));
       current_residue = karmarkarKarp(a_prime);
+      System.out.println("Current residue: (" + iter + ") " + current_residue);
       if (current_residue < best_residue) {
         best_residue = current_residue;
+        best_p = p;
+        best_iter = iter;
+        System.out.println("Best residue: " + best_residue);
       }
     }
+    System.out.println("Best P: (" + best_iter + ")" + Arrays.toString(best_p));
     return best_residue;
   }
 }
