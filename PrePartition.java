@@ -9,12 +9,12 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 public class PrePartition {
-
-	private Random generator = new Random();
+  private Random generator;
 	private int[] p;
 	private Long[] a_prime;
 
 	public PrePartition(Long[] arr) {
+    generator = new Random(System.currentTimeMillis());
 		p = gen_random_p(arr.length);
 		a_prime = prePartition(arr);
 	}
@@ -36,6 +36,10 @@ public class PrePartition {
     for (int i = 0; i < a_prime.length; i++) {
       a_prime[i] = new Long(0);
     }
+    // for (int i = 0; i < a_prime.length; i++) {
+    //   System.out.println(a_prime[i].longValue());
+    // }
+    // System.out.println(a_prime.length);
 
     for (int i = 0; i < len; i++) {
       a_prime[p[i]] += a[i];
