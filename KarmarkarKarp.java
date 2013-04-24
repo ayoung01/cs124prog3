@@ -28,7 +28,5 @@ public class KarmarkarKarp {
     }
     // when the heap contains 1 element, return
     return heap.removemax().longValue();
-  }
-
-  
+  }  
 }

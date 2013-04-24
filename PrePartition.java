@@ -23,6 +23,7 @@ public class PrePartition {
   public int[] gen_random_p(int len) {
     int[] p = new int[len];
     for (int i = 0; i < len; i++) {
+      // generates a random int from 0 to 100 inclusive
       p[i] = generator.nextInt(len);
     }
     return p;
