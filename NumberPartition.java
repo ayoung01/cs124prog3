@@ -38,10 +38,11 @@ public class NumberPartition {
     }
     NumberPartition np = new NumberPartition();
     System.out.println(np.random_alg2(inputList));
+
 	}
 
   public long random_alg(Long[] arr){
-    Random generator = new Random(System.currentTimeMillis());
+    Random generator = new Random();
     int rand = 0;
     Long best_residue = new Long(MAX_LONG);
     Long current_residue = new Long(0);
@@ -127,7 +128,7 @@ public class NumberPartition {
     return solution;
   }
 
-    public long random_alg2(Long[] arr) {
+  public long random_alg2(Long[] arr) {
     Long[] a = arr;
     int best_iter = -1;
     long best_residue = MAX_LONG;
