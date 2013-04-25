@@ -40,7 +40,8 @@ public class NumberPartition {
     for (int i = 0; i < inputList.length; i++) {
       sum += inputList[i];
     }
-    System.out.println("RESIDUE: " + np.random_alg2(inputList));
+    // System.out.println("RESIDUE: " + np.random_alg2(inputList));
+    System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
     System.out.println("INPUT SUM: " + sum);
 	}
 
