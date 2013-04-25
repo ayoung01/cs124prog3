@@ -1,18 +1,30 @@
 import java.util.Random;
 import java.util.Collections;
 import java.util.Arrays;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 
 public class KarmarkarKarp {
 	
 	private MaxHeap<Long> heap;
-	public KarmarkarKarp(Long[] arr) {
-		heap = new MaxHeap<Long>(arr, arr.length, arr.length);
+  private MaxHeap<Long> savedHeap;
+  private String log;
+  private int flag;
+
+	public KarmarkarKarp(Long[] arr, int x) {
+    // System.out.println("KK JUST CREATED: " + Arrays.toString(arr));
+    log = Arrays.toString(arr) + "\r\n";
+    long sum = 0;
+    for (int i = 0; i < arr.length; i++) {
+      sum += arr[i];
+    }
+    log = log + "SUM: " + sum + "\r\n";
+
+    Long[] arr_copy = arr.clone();
+		heap = new MaxHeap<Long>(arr_copy, arr.length, arr.length);
+    // System.out.println("AFTER KK HEAP CREATION: " + Arrays.toString(arr));
+    savedHeap = heap;
+    flag = x;
 	}
 
 	// returns the KK residue given a list of longs
@@ -25,8 +37,28 @@ public class KarmarkarKarp {
 
       // insert the difference into the heap
       heap.insert(x - y);
+      if (flag == 1) {
+        log = log + "Popped MAX1 (" + x + ")\r\n";
+        log = log + "Popped MAX2 (" + y + ")\r\n";
+        log = log + "Difference inserted (" + (x-y) + ")\r\n";
+      }
     }
     // when the heap contains 1 element, return
-    return heap.removemax().longValue();
+    long residue = heap.removemax().longValue();
+
+    if (flag ==1) {
+      log = log + "FINAL RESIDUE: " + residue;
+      try {
+        // Create file 
+        FileWriter fstream = new FileWriter("log.txt");
+        BufferedWriter out = new BufferedWriter(fstream);
+        out.write(log);
+        out.close();
+      }
+      catch (Exception e){
+          System.err.println("Error: " + e.getMessage());
+      }
+    }
+    return residue;
   }  
 }

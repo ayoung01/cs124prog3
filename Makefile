@@ -8,7 +8,9 @@ CLASSES = \
 	NumberPartition.java \
 	MaxHeap.java \
 	FileGenerator.java \
-	DSUtil.java
+	DSUtil.java \
+	PrePartition.java \
+	KarmarkarKarp.java
 
 default: classes
 

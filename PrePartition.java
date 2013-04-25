@@ -14,11 +14,14 @@ public class PrePartition {
 	private Long[] a_prime;
 
 	public PrePartition(Long[] arr) {
-    generator = new Random(System.currentTimeMillis());
+    generator = new Random();
 		p = gen_random_p(arr.length);
 		a_prime = prePartition(arr);
 	}
 
+  public Long[] get_a_prime() {
+    return a_prime;
+  }
 	// generates a random P array of length len
   public int[] gen_random_p(int len) {
     int[] p = new int[len];
@@ -35,21 +38,20 @@ public class PrePartition {
     // initialize a_prime to all zeroes
     Long[] a_prime = new Long[len];
     for (int i = 0; i < a_prime.length; i++) {
-      a_prime[i] = new Long(0);
+      a_prime[i] = new Long(0L);
     }
-    // for (int i = 0; i < a_prime.length; i++) {
-    //   System.out.println(a_prime[i].longValue());
-    // }
-    // System.out.println(a_prime.length);
 
     for (int i = 0; i < len; i++) {
       a_prime[p[i]] += a[i];
     }
+    // System.out.println("NEWLY CREATED: " + Arrays.toString(a_prime));
     return a_prime;
   }
 
   public long residue() {
-  	KarmarkarKarp kk = new KarmarkarKarp(a_prime);
+    // System.out.println("BEFORE CALLING KK: " + Arrays.toString(a_prime));
+  	KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
+    // System.out.println("AFTER CALLING KK: " + Arrays.toString(a_prime));
   	return kk.residue();
   }
 }

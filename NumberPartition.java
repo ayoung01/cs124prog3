@@ -18,7 +18,6 @@ public class NumberPartition {
 	public NumberPartition() {
 	}
 
- //  static Long[] test_long = {new Long(10),new Long(15),new Long(3),new Long(10),new Long(9),new Long(19),new Long(19),new Long(1),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15),new Long(15)};
   private final int MAX_ITER = 25000;
   private final long MAX_LONG = 100000000000L;
   private final static int NUM_INPUTS = 100; 
@@ -37,8 +36,12 @@ public class NumberPartition {
       e.printStackTrace();
     }
     NumberPartition np = new NumberPartition();
-    System.out.println(np.random_alg2(inputList));
-
+    long sum = 0;
+    for (int i = 0; i < inputList.length; i++) {
+      sum += inputList[i];
+    }
+    System.out.println("RESIDUE: " + np.random_alg2(inputList));
+    System.out.println("INPUT SUM: " + sum);
 	}
 
   public long random_alg(Long[] arr){
@@ -67,7 +70,7 @@ public class NumberPartition {
   }
 
   public long hill_climb(Long[] in_arr){
-    Random generator = new Random(System.currentTimeMillis());
+    Random generator = new Random();
     int[] solution = new int[100];
     int[] neighbor = new int[100];
     Long best_residue = new Long(0);
@@ -92,7 +95,7 @@ public class NumberPartition {
     return best_residue;
   }
   public int[] find_neighbor(int[] solution){
-    Random generator = new Random(System.currentTimeMillis());
+    Random generator = new Random();
     int rand = generator.nextInt() % 2;
     int[] switch_array = new int[100];
     for(int i=0; i<100; i++){
@@ -130,19 +133,29 @@ public class NumberPartition {
 
   public long random_alg2(Long[] arr) {
     Long[] a = arr;
-    int best_iter = -1;
+    Long[] saved = arr;
+
     long best_residue = MAX_LONG;
     long current_residue;
 
     for (int iter = 0; iter < MAX_ITER; iter++) {
       PrePartition pp = new PrePartition(arr);
       current_residue = pp.residue();
+      // System.out.println("current_residue (" + iter +"): " + current_residue);
       if (current_residue < best_residue) {
         best_residue = current_residue;
+        saved = pp.get_a_prime();
 
         System.out.println("Best residue: " + best_residue);
       }
     }
+    Karmarkar_debug(saved);
+
     return best_residue;
+  }
+
+  public void Karmarkar_debug(Long[] arr) {
+    KarmarkarKarp kk = new KarmarkarKarp(arr, 1);
+    kk.residue();
   }
 }
