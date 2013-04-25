@@ -54,4 +54,14 @@ public class PrePartition {
     // System.out.println("AFTER CALLING KK: " + Arrays.toString(a_prime));
   	return kk.residue();
   }
+
+  public Long[] getNeighbor() {
+    // Choose two random indices i and j from [1, n] with p_i != j and set p_i to j
+    int i = (generator.nextInt() % a_prime.length);
+    do {
+      int j = (generator.nextInt() % a_prime.length);
+    } while(j != p[i])
+    p[i] = j;
+    return prePartition(a_prime);
+  }
 }
