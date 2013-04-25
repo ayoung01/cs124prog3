@@ -132,7 +132,6 @@ public class NumberPartition {
   }
 
   public long random_alg2(Long[] arr) {
-    Long[] a = arr;
     Long[] saved = arr;
 
     long best_residue = MAX_LONG;
@@ -151,6 +150,23 @@ public class NumberPartition {
     }
     Karmarkar_debug(saved);
 
+    return best_residue;
+  }
+
+  public long random_alg_pp_hill(Long[] arr){
+    PrePartition pp = new PrePartition(arr);
+    long best_residue = MAX_LONG;
+    long current_residue;
+    for (int iter = 0; iter < MAX_ITER; iter++) {
+      pp.getNeighbor();
+      best_residue = pp.residue();
+      System.out.println("Best residue: " + best_residue);
+      // if (current_residue < best_residue) {
+      //   best_residue = current_residue;
+
+      //   System.out.println("Best residue: " + best_residue);
+      // } 
+    }
     return best_residue;
   }
 
