@@ -12,8 +12,11 @@ public class PrePartition {
   private Random generator;
 	private int[] p;
 	private Long[] a_prime;
+  private Long[] a_orig;
+  private long residue;
 
 	public PrePartition(Long[] arr) {
+    a_orig = arr;
     generator = new Random();
 		p = gen_random_p(arr.length);
 		a_prime = prePartition(arr);
@@ -32,7 +35,7 @@ public class PrePartition {
     return p;
   }
 
-  // given A, return A'
+  // given A, return a_prime using p
   public Long[] prePartition(Long[] a) {
     int len = a.length;
     // initialize a_prime to all zeroes
@@ -44,24 +47,31 @@ public class PrePartition {
     for (int i = 0; i < len; i++) {
       a_prime[p[i]] += a[i];
     }
-    // System.out.println("NEWLY CREATED: " + Arrays.toString(a_prime));
+    KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
+    residue = kk.residue;
     return a_prime;
   }
 
   public long residue() {
-    // System.out.println("BEFORE CALLING KK: " + Arrays.toString(a_prime));
-  	KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
-    // System.out.println("AFTER CALLING KK: " + Arrays.toString(a_prime));
-  	return kk.residue();
+    return residue;
   }
 
-  public Long[] getNeighbor() {
+  public void getNeighbor() {
     // Choose two random indices i and j from [1, n] with p_i != j and set p_i to j
+    int[] p_copy = p.clone();
     int i = (generator.nextInt() % a_prime.length);
     do {
       int j = (generator.nextInt() % a_prime.length);
-    } while(j != p[i])
-    p[i] = j;
-    return prePartition(a_prime);
+    } while(j != p_copy[i])
+    p_copy[i] = j;
+
+    KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
+    new_residue = kk.residue;
+
+    // Update if a better neighbor has been found
+    if (new_residue < residue) {
+      p = p_copy;
+      a_prime = prePartition(a_orig);
+    }
   }
 }
