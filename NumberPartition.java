@@ -40,8 +40,8 @@ public class NumberPartition {
     for (int i = 0; i < inputList.length; i++) {
       sum += inputList[i];
     }
-    System.out.println("RESIDUE: " + np.random_alg_pp(inputList));
-    System.out.println("INPUT SUM: " + sum);
+    // System.out.println("RESIDUE: " + np.random_alg2(inputList));
+    System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
 	}
 
   public long random_alg(Long[] arr){
@@ -131,8 +131,8 @@ public class NumberPartition {
     return solution;
   }
 
-  public long random_alg_pp(Long[] arr) {
-    Long[] a = arr;
+
+  public long random_alg2(Long[] arr) {
     Long[] saved = arr;
 
     long best_residue = MAX_LONG;
@@ -153,7 +153,22 @@ public class NumberPartition {
 
     return best_residue;
   }
-  
+
+  public long random_alg_pp_hill(Long[] arr){
+    PrePartition pp = new PrePartition(arr);
+    long best_residue = MAX_LONG;
+    long current_residue;
+    for (int iter = 0; iter < MAX_ITER; iter++) {
+      pp.getNeighbor();
+      current_residue = pp.residue();
+      if (current_residue < best_residue) {
+        best_residue = current_residue;
+        System.out.println("Best residue: " + best_residue);
+      } 
+    }
+    return best_residue;
+  }
+
   public void Karmarkar_debug(Long[] arr) {
     KarmarkarKarp kk = new KarmarkarKarp(arr, 1);
     kk.residue();
