@@ -48,7 +48,7 @@ public class PrePartition {
       a_prime[p[i]] += a[i];
     }
     KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
-    residue = kk.residue;
+    residue = kk.residue();
     return a_prime;
   }
 
@@ -57,16 +57,17 @@ public class PrePartition {
   }
 
   public void getNeighbor() {
-    // Choose two random indices i and j from [1, n] with p_i != j and set p_i to j
+    // Choose two random indices i and j from [0, n-1] with p_i != j and set p_i to j
     int[] p_copy = p.clone();
-    int i = (generator.nextInt() % a_prime.length);
+    int j;
+    int i = (generator.nextInt(a_prime.length));
     do {
-      int j = (generator.nextInt() % a_prime.length);
-    } while(j != p_copy[i])
+      j = (generator.nextInt(a_prime.length));
+    } while(j != p_copy[i]);
     p_copy[i] = j;
 
     KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
-    new_residue = kk.residue;
+    long new_residue = kk.residue();
 
     // Update if a better neighbor has been found
     if (new_residue < residue) {
