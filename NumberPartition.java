@@ -18,7 +18,7 @@ public class NumberPartition {
 	public NumberPartition() {
 	}
 
-  private final int MAX_ITER = 25000;
+  private final int MAX_ITER = 25;
   private final long MAX_LONG = 100000000000L;
   private final static int NUM_INPUTS = 100; 
 
@@ -40,11 +40,11 @@ public class NumberPartition {
     for (int i = 0; i < inputList.length; i++) {
       sum += inputList[i];
     }
-    System.out.println("Residue: " + np.random_alg(inputList));
+    // System.out.println("Residue: " + np.random_alg(inputList));
     // System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
     // System.out.println("RESIDUE: " + np.random_alg2(inputList));
     // System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
-    // System.out.println("RESIDUE: " + np.random_pp_sim_annealed(inputList));
+    System.out.println("RESIDUE: " + np.random_pp_sim_annealed(inputList));
     System.out.println("INPUT SUM: " + sum);
 	}
 
@@ -80,9 +80,11 @@ public class NumberPartition {
     Long best_residue;
     Long current_residue;
     solution = generate_rand_soln();
+    System.out.println(Arrays.toString(solution));
     best_residue = calculate_residue(solution, in_arr);
     for(int j=0; j<MAX_ITER; j++){
       neighbor = find_neighbor(solution);
+      System.out.println(Arrays.toString(neighbor));
       current_residue = calculate_residue(neighbor,in_arr);
       if(current_residue < best_residue){
         System.out.println("CURRENT residue: "+current_residue);
@@ -179,11 +181,13 @@ public class NumberPartition {
     long best_residue = MAX_LONG;
     long current_residue;
     for (int iter = 0; iter < MAX_ITER; iter++) {
-      pp.get_annealed_neighbor((double)iter/(double)MAX_ITER);
-      best_residue = pp.residue();
-      // System.out.println("Best residue: " + best_residue);
+      pp.get_annealed_neighbor(iter);
+      current_residue = pp.residue();
+      if (current_residue < best_residue) {
+        best_residue = current_residue;
         System.out.println("Best residue: " + best_residue);
       } 
+    }
     return best_residue;
   }
 
