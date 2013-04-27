@@ -2,11 +2,7 @@ import java.lang.Math;
 import java.util.Random;
 import java.util.Collections;
 import java.util.Arrays;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 
 public class PrePartition {
@@ -15,6 +11,7 @@ public class PrePartition {
 	private Long[] a_prime;
   private Long[] a_orig;
   private long residue;
+  private String log;
 
 	public PrePartition(Long[] arr) {
     a_orig = arr;
@@ -23,6 +20,7 @@ public class PrePartition {
 		a_prime = prePartition(arr, p);
     KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
     residue = kk.residue();
+    log = "";
 	}
 
   public Long[] get_a_prime() {
@@ -94,34 +92,22 @@ public class PrePartition {
 
     KarmarkarKarp kk = new KarmarkarKarp(new_a_prime, 0);
     Long new_residue = kk.residue();
+    double probability = anneal(iter, new_residue, residue);
+    // log = log + probability + "\r\n";
 
-    
-
-    double temp = get_temperature(iter);
-    // System.out.println("temp: " + temp);
-    // System.out.println("new_residue: " + new_residue);
-    // System.out.println("old residue: " + residue);
-    double exponent = (-(new_residue - residue)/(temp));
-    // System.out.println(exponent);
-    // exponent = Math.floor(exponent);
-    // System.out.println(exponent);
-    double probability = Math.pow(2.18, exponent);
-    // probability = Math.floor(probability);
-    System.out.println(probability);
-    double choose_neighbor = Math.abs(generator.nextInt() % probability);
-    // System.out.println(choose_neighbor);
-    // Update if a better neighbor has been found
-    if (new_residue < residue) {
+    if (Math.random() < probability || new_residue < residue) {
       p = p_copy;
       a_prime = new_a_prime;
       residue = new_residue;
     }
-    else if(choose_neighbor == 1){
-      System.out.println("bad jump! "+temp);
-    }  
   }
 
-  public double get_temperature(int iter){
-    return Math.pow(10,10)*Math.pow(0.8,iter/300);
+  public String getLog() {
+    return log;
+  }
+
+  public double anneal(int iter, long a, long b){
+    double temp = Math.pow(10,10)*Math.pow(0.8,iter/300);
+    return Math.exp(-(a - b)/temp);
   }
 }
