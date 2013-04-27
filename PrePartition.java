@@ -20,7 +20,9 @@ public class PrePartition {
     a_orig = arr;
     generator = new Random();
 		p = gen_random_p(arr.length);
-		a_prime = prePartition(arr);
+		a_prime = prePartition(arr, p);
+    KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
+    residue = kk.residue();
 	}
 
   public Long[] get_a_prime() {
@@ -37,20 +39,18 @@ public class PrePartition {
   }
 
   // given A, return a_prime using p
-  public Long[] prePartition(Long[] a) {
+  public Long[] prePartition(Long[] a, int[] p_local) {
     int len = a.length;
     // initialize a_prime to all zeroes
-    Long[] a_prime = new Long[len];
-    for (int i = 0; i < a_prime.length; i++) {
-      a_prime[i] = new Long(0L);
+    Long[] aprime_local = new Long[len];
+    for (int i = 0; i < len; i++) {
+      aprime_local[i] = new Long(0L);
     }
 
     for (int i = 0; i < len; i++) {
-      a_prime[p[i]] += a[i];
+      aprime_local[p_local[i]] += a[i];
     }
-    KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
-    residue = kk.residue();
-    return a_prime;
+    return aprime_local;
   }
 
   public long residue() {
@@ -58,24 +58,26 @@ public class PrePartition {
   }
 
   public void getNeighbor() {
-    // Choose two random indices i and j from [1, n] with p_i != j and set p_i to j IF RESIDUE IS BETTER
+    // Choose two random indices i and j from [0, n-1] with p_i != j and set p_i to j
+    
     int[] p_copy = p.clone();
     int j;
-    int i = generator.nextInt(a_prime.length);  
-    // System.out.println(i);
+    int i = (generator.nextInt(a_prime.length));
     do {
-      j = generator.nextInt(a_prime.length);
-    } while(j != p_copy[i]);
+      j = (generator.nextInt(a_prime.length));
+    } while(j == p_copy[i]);
     p_copy[i] = j;
+    Long[] new_a_prime = prePartition(a_orig, p_copy);
 
-    KarmarkarKarp kk = new KarmarkarKarp(a_prime, 0);
-    Long new_residue = kk.residue();
+    KarmarkarKarp kk = new KarmarkarKarp(new_a_prime, 0);
+    long new_residue = kk.residue();
 
     // Update if a better neighbor has been found
     if (new_residue < residue) {
+      System.out.println("Better neighbor found!");
       p = p_copy;
-      a_prime = prePartition(a_orig);
-      System.out.println("BETTER ");
+      a_prime = new_a_prime;
+      residue = new_residue;
     }
   }
 
@@ -105,7 +107,7 @@ public class PrePartition {
     // Update if a better neighbor has been found
     if (new_residue < residue) {
       p = p_copy;
-      a_prime = prePartition(a_orig);
+      a_prime = prePartition(a_orig, p);
     }
     else if(choose_neighbor == 1){
       System.out.println("bad jump! "+temp);

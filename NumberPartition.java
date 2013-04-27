@@ -40,8 +40,8 @@ public class NumberPartition {
     for (int i = 0; i < inputList.length; i++) {
       sum += inputList[i];
     }
-    // System.out.println("Residue: " + np.random_alg(inputList));
-    System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
+    System.out.println("Residue: " + np.random_alg(inputList));
+    // System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
     // System.out.println("RESIDUE: " + np.random_alg2(inputList));
     // System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
     // System.out.println("RESIDUE: " + np.random_pp_sim_annealed(inputList));
@@ -136,6 +136,7 @@ public class NumberPartition {
     return solution;
   }
 
+
   public long random_alg2(Long[] arr) {
     Long[] saved = arr;
 
@@ -167,7 +168,6 @@ public class NumberPartition {
       current_residue = pp.residue();
       if (current_residue < best_residue) {
         best_residue = current_residue;
-
         System.out.println("Best residue: " + best_residue);
       } 
     }
@@ -182,7 +182,8 @@ public class NumberPartition {
       pp.get_annealed_neighbor((double)iter/(double)MAX_ITER);
       best_residue = pp.residue();
       // System.out.println("Best residue: " + best_residue);
-    }
+        System.out.println("Best residue: " + best_residue);
+      } 
     return best_residue;
   }
 
