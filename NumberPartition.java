@@ -150,7 +150,6 @@ public class NumberPartition {
       }
     }
     Karmarkar_debug(saved);
-
     return best_residue;
   }
 
