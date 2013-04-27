@@ -40,8 +40,12 @@ public class NumberPartition {
     for (int i = 0; i < inputList.length; i++) {
       sum += inputList[i];
     }
+    System.out.println("Residue: " + np.random_alg(inputList));
+    // System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
     // System.out.println("RESIDUE: " + np.random_alg2(inputList));
-    System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
+    // System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
+    // System.out.println("RESIDUE: " + np.random_pp_sim_annealed(inputList));
+    System.out.println("INPUT SUM: " + sum);
 	}
 
   public long random_alg(Long[] arr){
@@ -62,6 +66,7 @@ public class NumberPartition {
       }
       current_residue = Math.abs(current_residue);
       if (current_residue < best_residue){
+        System.out.println("best_residue: "+best_residue);
         best_residue = current_residue;
       }
       // System.out.println(best_residue.longValue());
@@ -70,41 +75,41 @@ public class NumberPartition {
   }
 
   public long hill_climb(Long[] in_arr){
-    Random generator = new Random();
-    int[] solution = new int[100];
-    int[] neighbor = new int[100];
-    Long best_residue = new Long(0);
-    Long current_residue = new Long(0);
-    int rand = 0;
-    int rand_index = 0;
+    int[] solution = new int[NUM_INPUTS];
+    int[] neighbor = new int[NUM_INPUTS];
+    Long best_residue;
+    Long current_residue;
     solution = generate_rand_soln();
-    for(int i=0; i<100; i++){
-      best_residue += solution[i]*in_arr[i];
-    }
-    best_residue = Math.abs(best_residue);
+    best_residue = calculate_residue(solution, in_arr);
     for(int j=0; j<MAX_ITER; j++){
       neighbor = find_neighbor(solution);
-      for(int i=0; i<100; i++){
-        current_residue += neighbor[i]*in_arr[i];
-      }
-      current_residue = Math.abs(current_residue);
+      current_residue = calculate_residue(neighbor,in_arr);
       if(current_residue < best_residue){
+        System.out.println("CURRENT residue: "+current_residue);
         best_residue = current_residue;
+        solution = neighbor;
       }
     }
     return best_residue;
   }
+  public long calculate_residue(int[] pos_neg, Long[] magnitudes){
+    Long residue = new Long(0);
+    for(int i=0;i<NUM_INPUTS;i++){
+      residue += pos_neg[i]*magnitudes[i];
+    }
+    return Math.abs(residue);
+  }
   public int[] find_neighbor(int[] solution){
     Random generator = new Random();
     int rand = generator.nextInt() % 2;
-    int[] switch_array = new int[100];
-    for(int i=0; i<100; i++){
+    int[] switch_array = new int[NUM_INPUTS];
+    for(int i=0; i<NUM_INPUTS; i++){
       switch_array[i] = i;
     }
     Collections.shuffle(Arrays.asList(switch_array));
     int rand_index = switch_array[0];
 
-    Long[] neighbor = new Long[100];
+    Long[] neighbor = new Long[NUM_INPUTS];
     if(rand == 0){
       solution[rand_index] = -solution[rand_index];
     }
@@ -117,9 +122,9 @@ public class NumberPartition {
   }
   public int[] generate_rand_soln(){
     Random generator = new Random();
-    int rand = 0;
+    int rand;
     int[] solution = new int[100];
-    for(int i=0; i<100; i++){
+    for(int i=0; i<NUM_INPUTS; i++){
       rand = generator.nextInt();
       if(rand % 2 == 0){
         solution[i] = 1;
@@ -165,6 +170,19 @@ public class NumberPartition {
         System.out.println("Best residue: " + best_residue);
       } 
     }
+    return best_residue;
+  }
+
+  public long random_pp_sim_annealed(Long[] arr){
+    PrePartition pp = new PrePartition(arr);
+    long best_residue = MAX_LONG;
+    long current_residue;
+    for (int iter = 0; iter < MAX_ITER; iter++) {
+      pp.get_annealed_neighbor((double)iter/(double)MAX_ITER);
+      best_residue = pp.residue();
+      // System.out.println("Best residue: " + best_residue);
+        System.out.println("Best residue: " + best_residue);
+      } 
     return best_residue;
   }
 
