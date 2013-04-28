@@ -106,8 +106,8 @@ public class PrePartition {
     return log;
   }
 
-  public double anneal(int iter, long a, long b){
+  public double anneal(int iter, long res_a, long res_b){
     double temp = Math.pow(10,10)*Math.pow(0.8,iter/300);
-    return Math.exp(-(a - b)/temp);
+    return Math.exp(-(res_a - res_b)/temp);
   }
 }

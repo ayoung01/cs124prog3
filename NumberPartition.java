@@ -14,7 +14,7 @@ public class NumberPartition {
 	public NumberPartition() {
 	}
 
-  private final int MAX_ITER = 25000;
+  private final int MAX_ITER = 100;
   private final long MAX_LONG = 100000000000L;
   private final static int NUM_INPUTS = 100; 
 
@@ -37,10 +37,11 @@ public class NumberPartition {
       sum += inputList[i];
     }
     // System.out.println("Residue: " + np.random_alg(inputList));
-    // System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
+    System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
+    // System.out.println("Residue Hill Climb: " + np.sim_annealed(inputList));
     // System.out.println("RESIDUE: " + np.random_alg2(inputList));
     // System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
-    System.out.println("RESIDUE: " + np.random_pp_sim_annealed(inputList));
+    // System.out.println("RESIDUE: " + np.random_pp_sim_annealed(inputList));
     System.out.println("INPUT SUM: " + sum);
 	}
 
@@ -74,22 +75,21 @@ public class NumberPartition {
     int[] solution = new int[NUM_INPUTS];
     int[] neighbor = new int[NUM_INPUTS];
     Long best_residue;
-    Long current_residue;
+    Long new_residue;
     solution = generate_rand_soln();
-    System.out.println(Arrays.toString(solution));
     best_residue = calculate_residue(solution, in_arr);
     for(int j=0; j<MAX_ITER; j++){
       neighbor = find_neighbor(solution);
-      System.out.println(Arrays.toString(neighbor));
-      current_residue = calculate_residue(neighbor,in_arr);
-      if(current_residue < best_residue){
-        System.out.println("CURRENT residue: "+current_residue);
-        best_residue = current_residue;
+      new_residue = calculate_residue(neighbor,in_arr);
+      if(new_residue < best_residue){
+        System.out.println("best_residue: "+new_residue);
+        best_residue = new_residue;
         solution = neighbor;
       }
     }
     return best_residue;
   }
+
   public long calculate_residue(int[] pos_neg, Long[] magnitudes){
     Long residue = new Long(0);
     for(int i=0;i<NUM_INPUTS;i++){
@@ -133,7 +133,39 @@ public class NumberPartition {
     }
     return solution;
   }
+  public long sim_annealed(Long[] in_arr){
+    int[] solution = new int[NUM_INPUTS];
+    int[] neighbor = new int[NUM_INPUTS];
+    Long best_residue = MAX_LONG;
+    Long current_residue;
+    Long new_residue;
+    
+    solution = generate_rand_soln();
+    current_residue = calculate_residue(solution, in_arr);
+    best_residue = current_residue;
 
+    for(int iter=0; iter<MAX_ITER; iter++){
+      neighbor = find_neighbor(solution);
+      new_residue = calculate_residue(neighbor,in_arr);
+      double probability = anneal(iter, new_residue, current_residue);
+      // System.out.println("probability: " + probability);
+      
+      if (Math.random() < probability || new_residue < current_residue){
+        System.out.println("current_residue: "+new_residue);
+        current_residue = new_residue;
+        solution = neighbor;
+        if(current_residue < best_residue){
+          best_residue = current_residue;
+        }
+      }
+    }
+    return best_residue;
+  }
+
+  public double anneal(int iter, long res_a, long res_b){
+    double temp = Math.pow(10,10)*Math.pow(0.8,iter/300);
+    return Math.exp(-(res_a - res_b)/temp);
+  }
 
   public long random_alg2(Long[] arr) {
     Long[] saved = arr;
