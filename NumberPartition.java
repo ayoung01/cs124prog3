@@ -14,7 +14,7 @@ public class NumberPartition {
 	public NumberPartition() {
 	}
 
-  private final int MAX_ITER = 100;
+  private final static int MAX_ITER = 250000;
   private final long MAX_LONG = 100000000000L;
   private final static int NUM_INPUTS = 100; 
 
@@ -37,12 +37,13 @@ public class NumberPartition {
       sum += inputList[i];
     }
     // System.out.println("Residue: " + np.random_alg(inputList));
-    System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
-    // System.out.println("Residue Hill Climb: " + np.sim_annealed(inputList));
+    // System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
+    System.out.println("Residue Sim Annealed: " + np.sim_annealed(inputList));
     // System.out.println("RESIDUE: " + np.random_alg2(inputList));
     // System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
     // System.out.println("RESIDUE: " + np.random_pp_sim_annealed(inputList));
     System.out.println("INPUT SUM: " + sum);
+    System.out.println("ITERATIONS: " + MAX_ITER);
 	}
 
   public long random_alg(Long[] arr){
@@ -79,8 +80,10 @@ public class NumberPartition {
     solution = generate_rand_soln();
     best_residue = calculate_residue(solution, in_arr);
     for(int j=0; j<MAX_ITER; j++){
+
       neighbor = find_neighbor(solution);
       new_residue = calculate_residue(neighbor,in_arr);
+
       if(new_residue < best_residue){
         System.out.println("best_residue: "+new_residue);
         best_residue = new_residue;
@@ -99,22 +102,18 @@ public class NumberPartition {
   }
   public int[] find_neighbor(int[] solution){
     Random generator = new Random();
-    int rand = generator.nextInt() % 2;
-    int[] switch_array = new int[NUM_INPUTS];
-    for(int i=0; i<NUM_INPUTS; i++){
-      switch_array[i] = i;
-    }
-    Collections.shuffle(Arrays.asList(switch_array));
-    int rand_index = switch_array[0];
-
-    Long[] neighbor = new Long[NUM_INPUTS];
+    int rand = generator.nextInt(2);
+    int rand_index = generator.nextInt(NUM_INPUTS);
+    int rand_index2;
     if(rand == 0){
       solution[rand_index] = -solution[rand_index];
     }
     else{
       solution[rand_index] = -solution[rand_index];
-      rand_index = switch_array[1];
-      solution[rand_index] = -solution[rand_index];
+      do{
+        rand_index2 = generator.nextInt(NUM_INPUTS);
+      }while(rand_index2 == rand_index);
+      solution[rand_index2] = -solution[rand_index2];
     }
     return solution;
   }
@@ -180,7 +179,6 @@ public class NumberPartition {
       if (current_residue < best_residue) {
         best_residue = current_residue;
         saved = pp.get_a_prime();
-
         System.out.println("Best residue: " + best_residue);
       }
     }
