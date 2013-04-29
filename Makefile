@@ -10,7 +10,8 @@ CLASSES = \
 	FileGenerator.java \
 	DSUtil.java \
 	PrePartition.java \
-	KarmarkarKarp.java
+	KarmarkarKarp.java \
+	CSVWriter.java
 
 default: classes
 

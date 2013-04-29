@@ -9,17 +9,29 @@ import java.nio.charset.Charset;
  * @author Albert Young, Peregrine Badger
  */
 
-
 public class NumberPartition {
-	public NumberPartition() {
-	}
 
   private final static int MAX_ITER = 250000;
-  private final long MAX_LONG = 100000000000L;
-  private final static int NUM_INPUTS = 100; 
+  private final static long MAX_LONG = 100000000000L;
+  private final static int NUM_INPUTS = 100;
+  private static boolean verbose = false; 
 
 	public static void main(String[] args) {
     String filename = args[0];
+    Long[] inputList = readInputs(filename);
+    NumberPartition np = new NumberPartition();
+    if (verbose) {
+      // System.out.println("Residue: " + np.random_alg(inputList));
+      // System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
+      System.out.println("Residue Sim Annealed: " + np.sim_annealed(inputList));
+      // System.out.println("RESIDUE: " + np.random_alg_pp(inputList));
+      // System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
+      // System.out.println("RESIDUE: " + np.random_pp_sim_annealed(inputList));
+      System.out.println("ITERATIONS: " + MAX_ITER);
+    }
+	}
+
+  public static Long[] readInputs(String filename) {
     Long[] inputList = new Long[NUM_INPUTS];
     try {
       InputStream fis = new FileInputStream(filename);
@@ -31,20 +43,8 @@ public class NumberPartition {
     catch (Exception e) {
       e.printStackTrace();
     }
-    NumberPartition np = new NumberPartition();
-    long sum = 0;
-    for (int i = 0; i < inputList.length; i++) {
-      sum += inputList[i];
-    }
-    // System.out.println("Residue: " + np.random_alg(inputList));
-    // System.out.println("Residue Hill Climb: " + np.hill_climb(inputList));
-    System.out.println("Residue Sim Annealed: " + np.sim_annealed(inputList));
-    // System.out.println("RESIDUE: " + np.random_alg2(inputList));
-    // System.out.println("RESIDUE: " + np.random_alg_pp_hill(inputList));
-    // System.out.println("RESIDUE: " + np.random_pp_sim_annealed(inputList));
-    System.out.println("INPUT SUM: " + sum);
-    System.out.println("ITERATIONS: " + MAX_ITER);
-	}
+    return inputList;  
+  }
 
   public long random_alg(Long[] arr){
     Random generator = new Random();
@@ -64,10 +64,10 @@ public class NumberPartition {
       }
       current_residue = Math.abs(current_residue);
       if (current_residue < best_residue){
-        System.out.println("best_residue: "+best_residue);
+        if (verbose)
+          System.out.println("best_residue: "+best_residue);
         best_residue = current_residue;
       }
-      // System.out.println(best_residue.longValue());
     }
     return best_residue.longValue();
   }
@@ -85,7 +85,8 @@ public class NumberPartition {
       new_residue = calculate_residue(neighbor,in_arr);
 
       if(new_residue < best_residue){
-        System.out.println("best_residue: "+new_residue);
+        if (verbose)
+          System.out.println("best_residue: "+new_residue);
         best_residue = new_residue;
         solution = neighbor;
       }
@@ -147,10 +148,10 @@ public class NumberPartition {
       neighbor = find_neighbor(solution);
       new_residue = calculate_residue(neighbor,in_arr);
       double probability = anneal(iter, new_residue, current_residue);
-      // System.out.println("probability: " + probability);
       
       if (Math.random() < probability || new_residue < current_residue){
-        System.out.println("current_residue: "+new_residue);
+        if (verbose)
+          System.out.println("current_residue: "+new_residue);
         current_residue = new_residue;
         solution = neighbor;
         if(current_residue < best_residue){
@@ -166,7 +167,7 @@ public class NumberPartition {
     return Math.exp(-(res_a - res_b)/temp);
   }
 
-  public long random_alg2(Long[] arr) {
+  public long random_alg_pp(Long[] arr) {
     Long[] saved = arr;
 
     long best_residue = MAX_LONG;
@@ -175,14 +176,15 @@ public class NumberPartition {
     for (int iter = 0; iter < MAX_ITER; iter++) {
       PrePartition pp = new PrePartition(arr);
       current_residue = pp.residue();
-      // System.out.println("current_residue (" + iter +"): " + current_residue);
       if (current_residue < best_residue) {
         best_residue = current_residue;
         saved = pp.get_a_prime();
-        System.out.println("Best residue: " + best_residue);
+        if (verbose)
+          System.out.println("Best residue: " + best_residue);
       }
     }
-    Karmarkar_debug(saved);
+    if (verbose)
+      Karmarkar_debug(saved);
     return best_residue;
   }
 
@@ -195,7 +197,8 @@ public class NumberPartition {
       current_residue = pp.residue();
       if (current_residue < best_residue) {
         best_residue = current_residue;
-        System.out.println("Best residue: " + best_residue);
+        if (verbose)
+          System.out.println("Best residue: " + best_residue);
       } 
     }
     return best_residue;
@@ -210,24 +213,33 @@ public class NumberPartition {
       current_residue = pp.residue();
       if (current_residue < best_residue) {
         best_residue = current_residue;
-        System.out.println("Best residue: " + best_residue);
+        if (verbose)
+          System.out.println("Best residue: " + best_residue);
       } 
     }
-    // try {
-    //     // Create file 
-    //     FileWriter fstream = new FileWriter("log_prob.txt");
-    //     BufferedWriter out = new BufferedWriter(fstream);
-    //     out.write(pp.getLog());
-    //     out.close();
-    //   }
-    //   catch (Exception e){
-    //       System.err.println("Error: " + e.getMessage());
-    //   }
     return best_residue;
+  }
+
+  public static Long[] generateRandomInputs(int num) {
+    Long[] inputList = new Long[num];
+    Random gen = new Random();
+    for (int i = 0; i < inputList.length; i++) {
+      inputList[i] = FileGenerator.nextLong(gen, MAX_LONG);
+    }
+    return inputList;
   }
 
   public void Karmarkar_debug(Long[] arr) {
     KarmarkarKarp kk = new KarmarkarKarp(arr, 1);
     kk.residue();
+  }
+
+  // for debugging purposess
+  public static long calculate_sum(Long[] inputList) {
+    long sum = 0;
+    for (int i = 0; i < inputList.length; i++) {
+      sum += inputList[i];
+    }
+    return sum;
   }
 }

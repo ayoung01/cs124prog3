@@ -11,8 +11,8 @@ public class KarmarkarKarp {
   private String log;
   private int flag;
 
-	public KarmarkarKarp(Long[] arr, int x) {
-    // System.out.println("KK JUST CREATED: " + Arrays.toString(arr));
+	// if x is 1, then we are in verbose (debugging) mode!
+  public KarmarkarKarp(Long[] arr, int x) {
     log = Arrays.toString(arr) + "\r\n";
     long sum = 0;
     for (int i = 0; i < arr.length; i++) {
@@ -22,7 +22,6 @@ public class KarmarkarKarp {
 
     Long[] arr_copy = arr.clone();
 		heap = new MaxHeap<Long>(arr_copy, arr.length, arr.length);
-    // System.out.println("AFTER KK HEAP CREATION: " + Arrays.toString(arr));
     savedHeap = heap;
     flag = x;
 	}

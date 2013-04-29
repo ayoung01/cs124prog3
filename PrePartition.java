@@ -57,7 +57,6 @@ public class PrePartition {
 
   public void getNeighbor() {
     // Choose two random indices i and j from [0, n-1] with p_i != j and set p_i to j
-    
     int[] p_copy = p.clone();
     int j;
     int i = (generator.nextInt(a_prime.length));
@@ -72,7 +71,6 @@ public class PrePartition {
 
     // Update if a better neighbor has been found
     if (new_residue < residue) {
-      System.out.println("Better neighbor found!");
       p = p_copy;
       a_prime = new_a_prime;
       residue = new_residue;
